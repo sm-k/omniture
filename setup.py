@@ -8,22 +8,6 @@ from os import path
 
 d = path.abspath(path.dirname(__file__))
 
-# Get a long description from the README file
-with open(
-    path.join(
-        d,
-        'README.rst'
-    ),
-    encoding='utf-8'
-) as f:
-    long_description = ''.join(
-        re.split(
-            r'(^\s*To\s*install::\s*$)',
-            f.read(),
-            flags=re.IGNORECASE+re.MULTILINE
-        )[1:]
-    )
-
 setup(
     name='omniture',
 
