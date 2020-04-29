@@ -11,7 +11,7 @@ d = path.abspath(path.dirname(__file__))
 setup(
     name='omniture',
 
-    version='0.0.3',
+    version='0.0.4',
 
     description=(
         'A python package for interfacing with the Omniture Web Services API ' +
@@ -20,11 +20,11 @@ setup(
     long_description=long_description,
 
     # The project's main homepage.
-    url='',
+    url='https://tools.adidas-group.com/bitbucket/projects/USDA/repos/omniture/browse',
 
     # Author details
-    author='David Isaac Belais',
-    author_email='davebelais@gmail.com',
+    author='Stephen Knoth',
+    author_email='stephen.kntoh@adidas.com',
 
     # Choose your license
     license='MIT',
