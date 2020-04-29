@@ -17,7 +17,6 @@ setup(
         'A python package for interfacing with the Omniture Web Services API ' +
         '(https://marketing.adobe.com/developer/documentation).'
     ),
-    long_description=long_description,
 
     # The project's main homepage.
     url='https://tools.adidas-group.com/bitbucket/projects/USDA/repos/omniture/browse',

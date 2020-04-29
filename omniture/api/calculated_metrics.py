@@ -50,7 +50,21 @@ class CalculatedMetrics:
         )
         for segment in loads(str(response.read(), 'utf-8')):
             yield CalculatedMetric(segment)
-            
+    
+    def delete(
+        self,
+        calculated_metric_id=None # type: Optional[str]
+    ):
+        # type: (...) -> bool
+        """
+        Deletes a calulated metric
+        """
+        response = self.omniture.request(
+            'CalculatedMetrics.Delete',
+            data=dumps(dict(calculatedMetricID=calculated_metric_id))
+        )
+        return loads(str(response.read(), 'utf-8'))
+        
     def save(
         self,
         definition=None,  # type: Optional[SegmentDefinition]
