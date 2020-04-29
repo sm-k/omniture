@@ -2782,6 +2782,66 @@ class ClassificationItem(JSONObject):
             setattr(self, a, v)
 
 
+class Evars(JSONObject):
+    
+    _keys_attributes = OrderedDict([
+        ('name', 'name'),
+        ('evar_type', 'evar_type'),
+        ('id', 'id'),
+        ('enabled', 'enabled'),
+        ('description', 'description'),
+        ('binding_events', 'binding_events'),
+        ('merchandising_syntax', 'merchandising_syntax'),
+        ('expiration_type', 'expiration_type'),
+        ('expiration_custom_days', 'expiration_custom_days'),
+        ('allocation_type', 'allocation_type')
+    ])
+    
+    def __init__(
+        self,
+        data=None,
+        name=None,
+        evar_type=None,
+        id=None,
+        enabled=None,
+        description=None,
+        binding_events=None,
+        merchandising_syntax=None,
+        expiration_type=None,
+        expiration_custom_days=None,
+        allocation_type=None
+    ):
+    
+        self.name = name 
+        self.evar_type = evar_type 
+        self.id = id
+        self.enabled = enabled 
+        self.description = description 
+        self.binding_events = binding_events
+        self.merchandising_syntax = merchandising_syntax 
+        self.expiration_type = expiration_type
+        self.expiration_custom_days = expiration_custom_days 
+        self.allocation_type = allocation_type 
+        
+        if data is not None:
+            self.data = data 
+    
+    @property
+    def data(self):
+        return super().data
+
+    @data.setter
+    def data(self, data: Union[str, bytes, Dict]):
+        if isinstance(data, bytes):
+            data = str(data, 'utf-8')
+        if isinstance(data, str):
+            data = loads(data, object_hook=OrderedDict)
+        for k, v in data.items():
+            if v is None:
+                continue
+            
+            setattr(self, k, v)
+        
 class ElementClassifications(JSONObject):
 
     _keys_attributes = OrderedDict([
@@ -2847,7 +2907,55 @@ class ElementClassifications(JSONObject):
                 ])
             setattr(self, a, v)
 
+class ReportSuiteEvars(JSONObject):
+    
+    _keys_attributes = OrderedDict([
+        ('rsid', 'rsid'),
+        ('site_title', 'site_title'),
+        ('evars', 'evars')
+    ])
+    
+    def __init__(
+        self,
+        data=None,
+        rsid=None,
+        site_title=None,
+        evars=None
+    ):
+    
+        self.rsid = rsid 
+        self.site_title = site_title
+        if isinstance(evars, Evars):
+            evars = [evars]
+        self.evars = evars
+        
+        if data is not None:
+            self.data = data 
+            
+    @property
+    def data(self):
+        return super().data
 
+    @data.setter
+    def data(
+        self,
+        data  # type: Union[str, bytes, Dict]
+    ):
+        if isinstance(data, bytes):
+            data = str(data, 'utf-8')  # type: Union[str, bytes, Dict]
+        if isinstance(data, str):
+            data = loads(data, object_hook=OrderedDict)  # type: Union[str, bytes, Dict]
+        for k, v in data.items():
+            if v is None:
+                continue
+            a = self._keys_attributes[k]
+            if k == 'evars':
+                v = JSONArray([
+                    Evars(ec) for ec in v
+                ])
+            setattr(self, a, v)
+            
+                
 class ReportSuiteElementClassifications(JSONObject):
 
     _keys_attributes = OrderedDict([

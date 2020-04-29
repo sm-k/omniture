@@ -4,7 +4,7 @@ from typing import Optional, Union
 
 import omniture as omniture_
 from omniture.data import CreateReportSuiteResponse, ReportSuiteActivation, ReportSuiteAxleStartDate, \
-    ReportSuiteElementClassifications
+    ReportSuiteElementClassifications, ReportSuiteEvars
 
 
 class ReportSuite:
@@ -324,10 +324,25 @@ class ReportSuite:
         # https://marketing.adobe.com/developer/documentation/analytics-administration-1-4/r-getecommerce-1
         pass
 
-    def get_evars(self):
-        # TODO: Complete `ReportSuite.get_evars`
+    def get_evars(
+        self,
+        rsid_list
+    ):
         # https://marketing.adobe.com/developer/documentation/analytics-administration-1-4/r-getevars-1
-        pass
+        
+        if isinstance(rsid_list, str):
+            rsid_list = [rsid_list]
+        
+        data = OrderedDict()
+        if rsid_list is not None:
+            data['rsid_list'] = rsid_list
+
+        response = self.omniture.request(
+            'ReportSuite.GetEvars',
+            data=dumps(data)
+        )
+        for rsec in loads(str(response.read(), 'utf-8'), object_hook=OrderedDict):
+            yield ReportSuiteEvars(rsec)
 
     def get_events(self):
         # TODO: Complete `ReportSuite.get_events`
