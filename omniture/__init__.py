@@ -20,6 +20,7 @@ from omniture.api.data_sources import DataSources
 from omniture.api.permissions import Permissions
 from omniture.api.report import Report
 from omniture.api.report_suite import ReportSuite
+from omniture.api.data_warehouse import DataWarehouse
 from omniture.api.scheduling import Scheduling
 from omniture.api.segments import Segments
 from omniture.api.social import Social
@@ -224,13 +225,15 @@ class Omniture:
                 '\n\n' +
                 e.msg
             )
+            
+            error_key = 'error' if self.version == '1.4' else 'errors'
             if response:
                 response_data = loads(response)
-                if response_data['error'] == 'report_not_ready':
+                if response_data[error_key] == 'report_not_ready':
                     raise ReportNotReadyError(response_data)
-                elif response_data['error'] == 5021:
+                elif response_data[error_key] == 5021:
                     raise InvalidReportID(response_data)
-                elif response_data['error'] == 'Bad Request':
+                elif response_data[error_key] == 'Bad Request':
                     if 'authentication' in response_data['error_description']:
                         authentication_error = AuthenticationError(response_data)
                         if method != 'Company.GetLoginKey':
@@ -299,6 +302,11 @@ class Omniture:
     def report_suite(self):
         return ReportSuite(self)
 
+    @property
+    @functools.lru_cache(maxsize=1)
+    def data_warehouse(self):
+        return DataWarehouse(self)
+        
     @property
     @functools.lru_cache(maxsize=1)
     def scheduling(self):

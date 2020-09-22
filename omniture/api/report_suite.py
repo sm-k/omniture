@@ -4,7 +4,7 @@ from typing import Optional, Union
 
 import omniture as omniture_
 from omniture.data import CreateReportSuiteResponse, ReportSuiteActivation, ReportSuiteAxleStartDate, \
-    ReportSuiteElementClassifications, ReportSuiteEvars
+    ReportSuiteElementClassifications, ReportSuiteEvars, AvailableElementsResponse, AvailableMetricsResponse
 
 
 class ReportSuite:
@@ -158,6 +158,38 @@ class ReportSuite:
         # https://marketing.adobe.com/developer/documentation/analytics-administration-1-4/r-create-1
         pass
 
+    def get_available_elements(
+        self,
+        rsid_list,
+        return_datawarehouse_elements=None 
+    ):
+        if isinstance(rsid_list, str):
+            rsid_list = [rsid_list]
+        response = self.omniture.request(
+            'ReportSuite.GetAvailableElements',
+            data=dumps({
+                'rsid_list': [rsid for rsid in rsid_list]
+            })
+        )
+        data = loads(str(response.read(), 'utf-8'), object_hook=OrderedDict)
+        return AvailableElementsResponse(data)
+        
+    def get_available_metrics(
+        self,
+        rsid_list,
+        return_datawarehouse_elements=None 
+    ):
+        if isinstance(rsid_list, str):
+            rsid_list = [rsid_list]
+        response = self.omniture.request(
+            'ReportSuite.GetAvailableMetrics',
+            data=dumps({
+                'rsid_list': [rsid for rsid in rsid_list]
+            })
+        )
+        data = loads(str(response.read(), 'utf-8'), object_hook=OrderedDict)
+        return AvailableMetricsResponse(data)
+        
     def delete_classification(self):
         # TODO: Complete `ReportSuite.delete_classification`
         # https://marketing.adobe.com/developer/documentation/analytics-administration-1-4/r-deleteclassification

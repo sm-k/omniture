@@ -264,6 +264,107 @@ class JSONObject:
             return True
 
 
+class DataWarehouseRequest(JSONObject):
+
+    
+    _keys_attributes = OrderedDict([
+        ('rsid', 'rsid'),
+        ('Contact_Name', 'contact_name'),
+        ('Contact_Phone', 'contact_phone'),
+        ('Email_To', 'email_to'),
+        ('Email_Subject', 'email_subject'),
+        ('Report_Name', 'report_name'),
+        ('Report_Description', 'report_description'),
+        ('File_Name', 'file_name'),
+        ('Date_Type', 'date_type'),
+        ('Date_Preset', 'date_preset'),
+        ('Date_To', 'date_to'),
+        ('Date_From', 'date_from'),
+        ('Date_Granularity', 'date_granularity'),
+        ('Segment_Id', 'segment_id'),
+        ('Metric_List', 'metric_list'),
+        ('Breakdown_List', 'breakdown_list'),
+        ('FTP_Host', 'ftp_host'),
+        ('FTP_Port', 'ftp_post'),
+        ('FTP_Dir', 'ftp_dir'),
+        ('FTP_UserName', 'ftp_username'),
+        ('FTP_Password', 'ftp_password')
+    ])
+    
+
+    def __init__(
+        self,
+        data=None,
+        rsid=None,
+        contact_name=None,
+        contact_phone=None,
+        email_to=None,
+        email_subject=None,
+        report_name=None,
+        report_description=None,
+        file_name=None,
+        date_type=None,
+        date_preset=None,
+        date_to=None,
+        date_from=None,
+        date_granularity=None,
+        segment_id=None,
+        metric_list=None,
+        breakdown_list=None,
+        ftp_host=None,
+        ftp_post=None,
+        ftp_dir=None,
+        ftp_username=None,
+        ftp_password=None
+    ):
+        
+        self.rsid = rsid
+        self.contact_name = contact_name
+        self.contact_phone = contact_phone
+        self.email_to = email_to
+        self.email_subject = email_subject
+        self.report_name = report_name
+        self.report_description = report_description
+        self.file_name = file_name
+        self.date_type = date_type
+        self.date_preset = date_preset
+        self.date_to = date_to
+        self.date_from = date_from
+        self.date_granularity = date_granularity
+        self.segment_id = segment_id
+        self.metric_list = metric_list
+        self.breakdown_list = breakdown_list
+        self.ftp_host = ftp_host
+        self.ftp_post = ftp_post
+        self.ftp_dir = ftp_dir
+        self.ftp_username = ftp_username
+        self.ftp_password = ftp_password
+        
+        if data is not None:
+            self.data = data
+    
+
+    @property
+    def data(self):
+        return super().data
+
+    @data.setter
+    def data(self, data: Union[str, bytes, Dict]):
+        if isinstance(data, bytes):
+            data = str(data, 'utf-8')
+        if isinstance(data, str):
+            data = loads(data, object_hook=OrderedDict)
+        for k, v in data.items():
+            k = k.strip()
+            print(k, v)
+            if v is None:
+                continue
+            if k in ('date', 'dateFrom', 'dateTo'):
+                v = str2date(v)
+            a = self._keys_attributes[k]
+            setattr(self, a, v)
+        
+        
 class ReportDescriptionMetric(JSONObject):
     """
     A structure that identifies one metric used in a report.
@@ -541,7 +642,143 @@ class FTP(JSONObject):
         if data is not None:
             self.data = data
 
+class RSMetric(JSONObject):
 
+    _keys_attributes = OrderedDict([
+        ('metric_name', 'metric_name'),
+        ('display_name', 'display_name')
+    ])
+    
+    def __init__(
+        self,
+        data=None,
+        metric_name=None,
+        display_name=None
+    ):
+        self.metric_name = metric_name 
+        self.display_name = display_name 
+        
+        if data is not None:
+            self.data = data
+        
+    @property
+    def data(self):
+        return super().data
+        
+class AvailableMetricsResponse(JSONObject):
+    
+    _keys_attributes = OrderedDict([
+        ('rsid', 'rsid'),
+        ('site_title', 'site_title'),
+        ('available_metrics', 'available_metrics')
+    ])
+    
+    def __init__(
+        self,
+        data=None,
+        rsid=None,
+        site_title=None,
+        available_metrics=None
+    ):
+        self.rsid = rsid
+        self.site_title = site_title 
+        self.available_metrics = available_metrics
+
+        if data is not None:
+            self.data = data
+        
+    @property
+    def data(self):
+        return super().data
+
+    @data.setter
+    def data(self, data: Union[str, bytes, Dict]):
+        data = data[0]
+        if isinstance(data, bytes):
+            data = str(data, 'utf-8')
+        if isinstance(data, str):
+            data = loads(data, object_hook=OrderedDict)
+        for k, v in data.items():
+            k = k.strip()
+            if v is None:
+                continue
+            elif k == 'available_metrics':
+                v = JSONArray([
+                    RSMetric(metric_name=e['metric_name'], display_name=e['display_name'])
+                    for e in v
+                ])
+            a = self._keys_attributes[k]
+            setattr(self, a, v)
+        
+        
+class RSElement(JSONObject):
+
+    _keys_attributes = OrderedDict([
+        ('element_name', 'element_name'),
+        ('display_name', 'display_name')
+    ])
+    
+    def __init__(
+        self,
+        data=None,
+        element_name=None,
+        display_name=None
+    ):
+        self.element_name = element_name 
+        self.display_name = display_name 
+        
+        if data is not None:
+            self.data = data
+        
+    @property
+    def data(self):
+        return super().data
+        
+class AvailableElementsResponse(JSONObject):
+    
+    _keys_attributes = OrderedDict([
+        ('rsid', 'rsid'),
+        ('site_title', 'site_title'),
+        ('available_elements', 'available_elements')
+    ])
+    
+    def __init__(
+        self,
+        data=None,
+        rsid=None,
+        site_title=None,
+        available_elements=None
+    ):
+        self.rsid = rsid
+        self.site_title = site_title 
+        self.available_elements = available_elements
+
+        if data is not None:
+            self.data = data
+        
+    @property
+    def data(self):
+        return super().data
+
+    @data.setter
+    def data(self, data: Union[str, bytes, Dict]):
+        data = data[0]
+        if isinstance(data, bytes):
+            data = str(data, 'utf-8')
+        if isinstance(data, str):
+            data = loads(data, object_hook=OrderedDict)
+        for k, v in data.items():
+            k = k.strip()
+            if v is None:
+                continue
+            elif k == 'available_elements':
+                v = JSONArray([
+                    RSElement(element_name=e['element_name'], display_name=e['display_name'])
+                    for e in v
+                ])
+            a = self._keys_attributes[k]
+            setattr(self, a, v)
+        
 class ReportDescription(JSONObject):
     """
     A structure that contains information for creating a specific report.
@@ -2166,7 +2403,7 @@ class SegmentContainer(JSONObject):
                 If the definition has a container that defines a sequential segment (using the "then" operator),
                 the options for "type" are limited to "visits" or "visitors".
 
-                - Sub-containers within a sequential segment container that also use a "then" operator can specify a
+                - Sub-containers within a sequential segment container that alsoz use a "then" operator can specify a
                 "type" of "hits", "visits", or "logicgroup".
 
         :param operator:
@@ -2683,6 +2920,25 @@ class SegmentFilters(JSONObject):
         self.favorite = favorite
         if data is not None:
             self.data = data
+            
+        @property
+        def data(self):
+            return super().data
+
+        @data.setter
+        def data(
+            self,
+            data  # type: Union[str, bytes, Dict]
+        ):
+            if isinstance(data, bytes):
+                data = str(data, 'utf-8')  # type: Union[str, bytes, Dict]
+            if isinstance(data, str):
+                data = loads(data, object_hook=OrderedDict)  # type: Union[str, bytes, Dict]
+            for k, v in data.items():
+                if v is None:
+                    continue
+                a = self._keys_attributes[k]
+                setattr(self, a, v)
 
 
 class ClassificationItem(JSONObject):
