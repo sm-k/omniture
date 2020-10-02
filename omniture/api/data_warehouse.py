@@ -67,6 +67,27 @@ class DataWarehouse:
         
         return data
     
+    def get_segments(
+        self,
+        rsid,
+        start_date,
+        end_date
+    ):
+        
+        data = OrderedDict()
+        data['rsid'] = rsid
+        data['start_date'] = start_date 
+        data['end_date'] = end_date
+    
+        response = self.omniture.request(
+            'DataWarehouse.GetSegments',
+            data=dumps(data)
+        )
+        
+        data = loads(str(response.read(), 'utf-8'), object_hook=OrderedDict)
+        
+        return data
+        
     def create_request(
         self,
         request

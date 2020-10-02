@@ -3218,6 +3218,7 @@ class ReportSuiteElementClassifications(JSONObject):
         ('rsid', 'rsid'),
         ('site_title', 'site_title'),
         ('element_classifications', 'element_classifications'),
+        ('classifications', 'classifications')
         #('description', 'description')
     ])
 
@@ -3227,6 +3228,7 @@ class ReportSuiteElementClassifications(JSONObject):
         rsid=None,  # type: Optional[str]
         site_title=None,  # type: Optional[str]
         element_classifications=None,  # type: Optional[Sequence[ElementClassifications]]
+        classifications=None
         #description=None,  # type: Optional[str]
     ):
         # type: (...) -> None
@@ -3253,6 +3255,7 @@ class ReportSuiteElementClassifications(JSONObject):
         if isinstance(element_classifications, ElementClassifications):
             element_classifications = [element_classifications]
         self.element_classifications = element_classifications
+        self.classifications = classifications
         #self.description = description
         if data is not None:
             self.data = data
